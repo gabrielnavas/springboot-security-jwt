@@ -22,6 +22,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain) throws ServletException, IOException {
+        final String jwt = extractTokenFromHeader(request, response, filterChain);
+        final String username = jwtService.extractUsername(jwt);
+    }
+
+    private static String extractTokenFromHeader(HttpServletRequest request, HttpServletResponse response,
+                                                 FilterChain filterChain) throws IOException, ServletException {
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String bearerName = "Bearer ";
@@ -30,6 +36,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         }
         jwt = authHeader.substring(bearerName.length());
-        username = jwtService.extractUsername(jwt); // TODO: extract the email from JWT token;
+        return jwt;
     }
 }
