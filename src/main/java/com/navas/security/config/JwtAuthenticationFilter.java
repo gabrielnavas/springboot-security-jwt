@@ -21,7 +21,7 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
-    private UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(
@@ -34,6 +34,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         boolean userNotConnected = SecurityContextHolder.getContext().getAuthentication() == null;
         if (userEmail != null && userNotConnected) {
             UsernamePasswordAuthenticationToken authToken = validateJwt(request, jwt, userEmail);
+            updateSecurityContextHolder(authToken);
+        }
+        filterChain.doFilter(request, response);
+    }
+
+    private static void updateSecurityContextHolder(UsernamePasswordAuthenticationToken authToken) {
+        if (authToken != null) {
+            SecurityContextHolder.getContext().setAuthentication(authToken);
         }
     }
 
