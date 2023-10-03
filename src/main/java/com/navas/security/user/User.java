@@ -1,42 +1,3 @@
-## A arquitetura usada no projeto para authenticação.
-
-![img.png](readme-images/architecture.png)
-
-### Docker compose
-
-#### Vamos adicionar o docker-compose para usar o postgresql
-
-```docker
-version: '3.1'
-
-services:
-  db:
-    image: postgres:14.3
-    restart: always
-    environment:
-      POSTGRES_PASSWORD: postgres123
-    ports:
-      - "5435:5432"
-```
-
-### Role
-
-#### Usado para especificar qual tipo de User é.
-
-```java
-package com.navas.security.user;
-
-public enum Role {
-    USER,
-    ADMIN
-}
-```
-
-### User Model
-
-#### A classe User está o mais simples possível, ela implementa o UserDetails que é o User do SpringBoot.
-
-```java
 package com.navas.security.user;
 
 import jakarta.persistence.*;
@@ -105,4 +66,3 @@ public class User implements UserDetails {
         return true;
     }
 }
-```
