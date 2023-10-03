@@ -153,3 +153,92 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 }
 ```
+
+- Para obter o username do token JWT do header, temos que implementar essa parte do código, no método doFilterInternal,
+  da classe
+  JWTAuthenticationFilter
+
+```java
+package com.navas.security.config;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
+
+@Component
+@RequiredArgsConstructor
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    private final JwtService jwtService;
+
+    @Override
+    protected void doFilterInternal(
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain) throws ServletException, IOException {
+        final String authHeader = request.getHeader("Authorization");
+        final String jwt;
+        final String bearerName = "Bearer ";
+        final String username;
+        if (authHeader == null || !authHeader.startsWith(bearerName)) {
+            filterChain.doFilter(request, response);
+        }
+        jwt = authHeader.substring(bearerName.length());
+        username = jwtService.extractUsername(jwt); // TODO: extract the email from JWT token;
+    }
+}
+```
+
+### JwtService
+
+#### Usado para obter extrair o username do JWT token, e qualquer outro tipo de dado do Claim
+
+```java
+package com.navas.security.config;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.stereotype.Service;
+
+import java.security.Key;
+import java.util.function.Function;
+
+@Service
+public class JwtService {
+
+    // TODO: use the @Value(value = "${jwt.secret-key}") to remove this hardcode
+    private static final String SECRET_KEY_HEX = "038bc9ba07236454625a53500231616945554efdcf05ea72a0cb8a7be1a5c7e3";
+
+    public String extractUsername(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+
+    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
+    }
+
+    private Claims extractAllClaims(String token) {
+        return Jwts
+                .parserBuilder()
+                .setSigningKey(getSignInKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    private Key getSignInKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY_HEX);
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
+}
+```
