@@ -22,7 +22,7 @@ public class ApplicationConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> userRepository
-                .findUserByUsername(username)
+                .findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("user not found"));
     }
 

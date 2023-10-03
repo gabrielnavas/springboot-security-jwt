@@ -28,15 +28,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain) throws ServletException, IOException {
-        final String jwt = extractTokenFromHeader(request, response, filterChain);
-
-        final String userEmail = jwtService.extractUsername(jwt);
-        boolean userNotConnected = SecurityContextHolder.getContext().getAuthentication() == null;
-        if (userEmail != null && userNotConnected) {
-            UsernamePasswordAuthenticationToken authToken = validateJwt(request, jwt, userEmail);
-            updateSecurityContextHolder(authToken);
+        try {
+            final String jwt = extractTokenFromHeader(request, response, filterChain);
+            if (jwt != null) {
+                final String userEmail = jwtService.extractUsername(jwt);
+                boolean userNotConnected = SecurityContextHolder.getContext().getAuthentication() == null;
+                if (userEmail != null && userNotConnected) {
+                    UsernamePasswordAuthenticationToken authToken = validateJwt(request, jwt, userEmail);
+                    updateSecurityContextHolder(authToken);
+                }
+            }
+            filterChain.doFilter(request, response);
+        } catch (Exception ex) {
+            System.out.println(ex);
         }
-        filterChain.doFilter(request, response);
     }
 
     private static void updateSecurityContextHolder(UsernamePasswordAuthenticationToken authToken) {
@@ -66,9 +71,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String bearerName = "Bearer ";
-        final String username;
         if (authHeader == null || !authHeader.startsWith(bearerName)) {
-            filterChain.doFilter(request, response);
+            return null;
         }
         jwt = authHeader.substring(bearerName.length());
         return jwt;
