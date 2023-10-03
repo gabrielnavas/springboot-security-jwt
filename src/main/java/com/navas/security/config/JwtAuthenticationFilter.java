@@ -6,6 +6,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -16,6 +19,7 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
+    private UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(
@@ -23,7 +27,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain) throws ServletException, IOException {
         final String jwt = extractTokenFromHeader(request, response, filterChain);
-        final String username = jwtService.extractUsername(jwt);
+
+        final String userEmail = jwtService.extractUsername(jwt);
+        boolean userNotConnected = SecurityContextHolder.getContext().getAuthentication() == null;
+        if (userEmail != null && userNotConnected) {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
+        }
     }
 
     private static String extractTokenFromHeader(HttpServletRequest request, HttpServletResponse response,
