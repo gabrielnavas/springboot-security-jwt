@@ -33,10 +33,6 @@ public class SecurityConfiguration {
             "/api/v1/auth/*",
     };
 
-    private static final String[] PRIVATE_LIST_URL = {
-            "/api/v1/books/",
-    };
-
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
 
@@ -45,8 +41,7 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req ->
-                        req.requestMatchers(PRIVATE_LIST_URL)
-                                .authenticated()
+                        req
                                 .requestMatchers(PUBLIC_LIST_URL)
                                 .permitAll()
                                 .anyRequest()
