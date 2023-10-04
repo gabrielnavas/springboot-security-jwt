@@ -18,7 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
-    private static final String[] WHITE_LIST_URL = {"/api/v1/auth/**",
+    private static final String[] PUBLIC_LIST_URL = {"/api/v1/auth/**",
             "/v2/api-docs",
             "/v3/api-docs",
             "/v3/api-docs/**",
@@ -29,8 +29,12 @@ public class SecurityConfiguration {
             "/swagger-ui/**",
             "/webjars/**",
             "/swagger-ui.html",
-            "/api/v1/ping/**",
-            "/api/v1/auth/**",
+            "/api/v1/ping/*",
+            "/api/v1/auth/*",
+    };
+
+    private static final String[] PRIVATE_LIST_URL = {
+            "/api/v1/books/",
     };
 
     private final JwtAuthenticationFilter jwtAuthFilter;
@@ -39,10 +43,14 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(req ->
-                        req.requestMatchers(WHITE_LIST_URL)
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(req ->
+                        req.requestMatchers(PRIVATE_LIST_URL)
+                                .authenticated()
+                                .requestMatchers(PUBLIC_LIST_URL)
                                 .permitAll()
-                                .requestMatchers("/api/v1/books").authenticated()
+                                .anyRequest()
+                                .authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)

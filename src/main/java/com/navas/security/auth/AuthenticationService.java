@@ -1,7 +1,6 @@
 package com.navas.security.auth;
 
 import com.navas.security.config.JwtService;
-import com.navas.security.user.Role;
 import com.navas.security.user.User;
 import com.navas.security.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +28,7 @@ public class AuthenticationService {
                 .lastname(request.getLastname())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.USER)
+                .role(request.getRole())
                 .build();
         user = repository.save(user);
         var jwtToken = jwtService.generateToken(user);
