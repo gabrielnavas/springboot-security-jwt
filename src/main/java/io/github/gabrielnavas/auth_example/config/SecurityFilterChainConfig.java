@@ -1,7 +1,7 @@
 package io.github.gabrielnavas.auth_example.config;
 
-import io.github.gabrielnavas.auth_example.role.model.ERole;
 import io.github.gabrielnavas.auth_example.security.JwtFilterService;
+import io.github.gabrielnavas.auth_example.user.model.ERole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

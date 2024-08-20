@@ -1,6 +1,6 @@
 package io.github.gabrielnavas.auth_example.commandlinerunner;
 
-import io.github.gabrielnavas.auth_example.role.service.RoleService;
+import io.github.gabrielnavas.auth_example.user.service.RoleService;
 import io.github.gabrielnavas.auth_example.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;

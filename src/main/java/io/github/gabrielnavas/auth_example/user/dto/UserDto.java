@@ -1,6 +1,5 @@
 package io.github.gabrielnavas.auth_example.user.dto;
 
-import io.github.gabrielnavas.auth_example.role.dto.RoleDto;
 import lombok.Builder;
 
 import java.time.LocalDate;

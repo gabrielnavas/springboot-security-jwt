@@ -1,6 +1,5 @@
 package io.github.gabrielnavas.auth_example.user.model;
 
-import io.github.gabrielnavas.auth_example.role.model.Role;
 import jakarta.persistence.*;
 import lombok.*;
 

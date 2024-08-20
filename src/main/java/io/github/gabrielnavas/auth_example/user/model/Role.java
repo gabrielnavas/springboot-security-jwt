@@ -1,4 +1,4 @@
-package io.github.gabrielnavas.auth_example.role.model;
+package io.github.gabrielnavas.auth_example.user.model;
 
 
 import jakarta.persistence.*;

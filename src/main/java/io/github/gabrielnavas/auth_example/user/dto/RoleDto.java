@@ -1,4 +1,4 @@
-package io.github.gabrielnavas.auth_example.role.dto;
+package io.github.gabrielnavas.auth_example.user.dto;
 
 import lombok.Builder;
 

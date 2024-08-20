@@ -1,12 +1,12 @@
 package io.github.gabrielnavas.auth_example.user.service;
 
-import io.github.gabrielnavas.auth_example.role.dto.RoleDto;
-import io.github.gabrielnavas.auth_example.role.model.ERole;
-import io.github.gabrielnavas.auth_example.role.model.Role;
-import io.github.gabrielnavas.auth_example.role.repository.RoleRepository;
+import io.github.gabrielnavas.auth_example.user.dto.RoleDto;
 import io.github.gabrielnavas.auth_example.user.dto.SaveUserDto;
 import io.github.gabrielnavas.auth_example.user.dto.UserDto;
+import io.github.gabrielnavas.auth_example.user.model.ERole;
+import io.github.gabrielnavas.auth_example.user.model.Role;
 import io.github.gabrielnavas.auth_example.user.model.User;
+import io.github.gabrielnavas.auth_example.user.repository.RoleRepository;
 import io.github.gabrielnavas.auth_example.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
