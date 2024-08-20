@@ -1,0 +1,6 @@
+spring:
+  profiles:
+    active: dev
+
+springdoc:
+  default-produces-media-type: application/json
